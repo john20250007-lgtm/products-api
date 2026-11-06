@@ -1,5 +1,7 @@
 package uk.ac.westminster.products_api.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,10 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import uk.ac.westminster.products_api.DigitalProduct;
 import uk.ac.westminster.products_api.Product;
 import uk.ac.westminster.products_api.ProductService;
-
-import java.util.List;
 
 @RestController
 public class ProductController {
@@ -25,13 +27,20 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
+    @GetMapping("/products/summaries")
+    public List<String> getSummaries() {
+        return productService.getAllSummaries();
+    }
+
     @GetMapping("/products/{id}")
     public Product getProductById(@PathVariable Long id) {
         return productService.getProductById(id).orElse(null);
     }
 
+    // DigitalProduct, not Product: Product is abstract so Jackson cannot build it
+    // from JSON. Temporary fix until Lectures 6-7.
     @PostMapping("/products")
-    public Product addProduct(@RequestBody Product product) {
+    public Product addProduct(@RequestBody DigitalProduct product) {
         return productService.addProduct(product);
     }
 

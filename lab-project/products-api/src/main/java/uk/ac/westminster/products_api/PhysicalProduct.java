@@ -1,19 +1,44 @@
-public class PhysicalProduct extends Product {
+package uk.ac.westminster.products_api;
+
+public class PhysicalProduct extends Product implements Discountable {
 
     private double weightKg;
     private String dimensions;
+    private double discountedPrice;
 
-    public PhysicalProduct(){}
-    public DigitalProduct(Long id, String name, double price,
-                          String weightKg, double dimensions) {
+    public PhysicalProduct() {}
+
+    public PhysicalProduct(Long id, String name, double price,
+                           double weightKg, String dimensions) {
         super(id, name, price);
         this.weightKg = weightKg;
         this.dimensions = dimensions;
+        this.discountedPrice = price;
     }
-    public String getWeightKg() {
+
+    @Override
+    public String getSummary() {
+        return "Physical: " + getName()
+                + " | Weight: " + weightKg + " kg";
+    }
+
+    @Override
+    public void applyDiscount(double rate) {
+        // Shipping is never discounted, so the discount is capped at 20%.
+        double capped = Math.min(rate, 0.20);
+        this.discountedPrice = getPrice() * (1 - capped);
+    }
+
+    @Override
+    public double getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public double getWeightKg() {
         return weightKg;
     }
-    public double getDimensions() {
+
+    public String getDimensions() {
         return dimensions;
     }
 }
